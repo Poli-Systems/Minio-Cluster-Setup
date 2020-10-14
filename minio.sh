@@ -3,7 +3,7 @@ While=1
 
 
 echo "Il vous faut rajouter chaque hôte dans /etc/hosts dans le format minio-1 minio-2..."
-read Nserv?"Combien de serveur minio aller vous connecter :"
+read Nserv?"Combien de serveur minio aller vous connecter (minimum 4 ou minio fonctionnera pas):"
 wget https://dl.min.io/server/minio/release/linux-amd64/minio
 chmod +x minio
 mv minio /usr/local/bin
