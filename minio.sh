@@ -1,5 +1,6 @@
 #!/bin/bash
 While=1
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 
 echo "Il vous faut rajouter chaque hôte dans /etc/hosts dans le format minio-1 minio-2..."
@@ -31,15 +32,6 @@ while [[ $Nserv -ne $While ]]; do
 done
 Opts=$Opts'-C /etc/minio"'
 echo $Opts >> /etc/default/minio
-
-
-apt update
-apt install curl wget golang-go -y
-wget -O generate_cert.go "https://golang.org/src/crypto/tls/generate_cert.go?m=text"
-$IP=`curl ifconfig.me`
-go run generate_cert.go -ca --host "$IP"
-mv cert.pem /etc/minio/certs/public.crt
-mv key.pem /etc/minio/certs/private.key
 
 
 echo '[Unit]
@@ -75,5 +67,16 @@ WantedBy=multi-user.target
 # Built for ${project.name}-${project.version} (${project.name})
 ' > /etc/systemd/system/minio.service
 systemctl daemon-reload
+
+service minio start
+service minio stop
+apt update
+apt install curl wget golang-go -y
+wget -O generate_cert.go "https://golang.org/src/crypto/tls/generate_cert.go?m=text"
+IP=`curl ifconfig.me`
+go run generate_cert.go -ca --host "$IP"
+sleep 2s
+mv ${DIR}/cert.pem /etc/minio/certs/public.crt
+mv ${DIR}/key.pem /etc/minio/certs/private.key
 
 echo "Minio à été installer et peut-être lancer avec 'service minio start' cepandant n'oubliez pas que il faut lancer toutes les machines en même temps la première fois"
