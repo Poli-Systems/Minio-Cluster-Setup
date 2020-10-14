@@ -3,13 +3,13 @@ While=1
 
 
 echo "Il vous faut rajouter chaque hôte dans /etc/hosts dans le format minio-1 minio-2..."
-read Nserv?"Combien de serveur minio aller vous connecter (minimum 4 ou minio fonctionnera pas):"
+read -p "Combien de serveur minio aller vous connecter (minimum 4 ou minio fonctionnera pas):" Nserv
 wget https://dl.min.io/server/minio/release/linux-amd64/minio
 chmod +x minio
 mv minio /usr/local/bin
 useradd -r minio-user -s /sbin/nologin
 chown minio-user:minio-user /usr/local/bin/minio
-read Folder?"Ou voulez vous stocker les données de minio :"
+read -p "Ou voulez vous stocker les données de minio :" Folder
 mkdir $Folder
 chown minio-user:minio-user $Folder
 mkdir /etc/minio
@@ -18,8 +18,8 @@ mkdir /var/minio
 chown minio-user:minio-user /var/minio
 
 
-read AccessKey?"Quel access key shouaitez vous utiliser :"
-read SecretKey?"Quel secret key shouaitez vous utiliser :"
+read -p "Quel access key shouaitez vous utiliser :" AccessKey
+read -p "Quel secret key shouaitez vous utiliser :" SecretKey
 echo "MINIO_ACCESS_KEY=\"$AccessKey\"" > /etc/default/minio
 echo "MINIO_SECRET_KEY=\"$SecretKey\"" >> /etc/default/minio
 echo 'MINIO_VOLUMES=""' >> /etc/default/minio
