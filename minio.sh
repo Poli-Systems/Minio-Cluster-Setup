@@ -17,8 +17,10 @@ chown minio-user:minio-user /usr/local/bin/minio
 read -p "Ou voulez vous stocker les données de minio :" Folder
 mkdir $Folder
 chown minio-user:minio-user $Folder
+chmod u+rxw $Folder
 mkdir /etc/minio
 chown minio-user:minio-user /etc/minio
+chmod u+rxw /etc/minio
 
 
 read -p "Quel access key shouaitez vous utiliser :" AccessKey
