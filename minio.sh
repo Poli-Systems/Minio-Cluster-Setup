@@ -19,8 +19,6 @@ mkdir $Folder
 chown minio-user:minio-user $Folder
 mkdir /etc/minio
 chown minio-user:minio-user /etc/minio
-mkdir /var/minio
-chown minio-user:minio-user /var/minio
 
 
 read -p "Quel access key shouaitez vous utiliser :" AccessKey
