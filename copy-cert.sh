@@ -16,12 +16,9 @@ done
 export IFS="|"
 for publicCRT in $key; do
     export IFS=" "
-    echo "This"
     for X in $MachinesIP
     do
-        ssh -p 22 -i "${SSHKey}"  -x -l root ${X} "echo ${publicCRT} > /etc/minio/certs/CAs/minio-${While}.crt" 2>&1
-        echo $X
-        echo $While
+        ssh -p 22 -i "${SSHKey}"  -x -l root ${X} "echo \"${publicCRT}\" >> /etc/minio/certs/CAs/minio-${While}.crt" 2>&1
         let "While=While+1"
     done
     export IFS="|"
