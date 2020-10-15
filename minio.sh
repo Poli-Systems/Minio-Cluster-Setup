@@ -8,6 +8,10 @@ read -p "Combien de serveur minio aller vous connecter (minimum 4 ou minio fonct
 wget https://dl.min.io/server/minio/release/linux-amd64/minio
 chmod +x minio
 mv minio /usr/local/bin
+wget https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x mc
+mv mc /usr/local/bin
+
 useradd -r minio-user -s /sbin/nologin
 chown minio-user:minio-user /usr/local/bin/minio
 read -p "Ou voulez vous stocker les données de minio :" Folder
