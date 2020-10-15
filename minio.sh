@@ -13,13 +13,13 @@ chmod +x mc
 mv mc /usr/local/bin
 
 useradd -r minio-user -s /sbin/nologin
-chown minio-user:minio-user /usr/local/bin/minio
+chown -R minio-user:minio-user /usr/local/bin/minio
 read -p "Ou voulez vous stocker les données de minio :" Folder
 mkdir $Folder
-chown minio-user:minio-user $Folder
+chown -R minio-user:minio-user $Folder
 chmod u+rxw $Folder
 mkdir /etc/minio
-chown minio-user:minio-user /etc/minio
+chown -R minio-user:minio-user /etc/minio
 chmod u+rxw /etc/minio
 
 
@@ -86,4 +86,5 @@ chown minio-user:minio-user /etc/minio
 
 
 echo "Minio à été installer et peut-être lancer avec 'service minio start' cepandant n'oubliez pas que il faut lancer toutes les machines en même temps la première fois"
-echo "Avant de lancer minio copier chaque clé publique dans /etc/minio/certs/public.crt vers les différentes machines vers /etc/minio/certs/CAs/public.crt"
+echo "Avant de lancer minio copier chaque clé publique dans /etc/minio/certs/public.crt vers les différentes machines vers /etc/minio/certs/CAs/public.crt et faites un"
+echo "chown -R minio-user:minio-user /etc/minio"
