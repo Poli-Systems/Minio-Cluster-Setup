@@ -82,5 +82,7 @@ go run generate_cert.go -ca --host "$IP"
 sleep 2s
 mv ${DIR}/cert.pem /etc/minio/certs/public.crt
 mv ${DIR}/key.pem /etc/minio/certs/private.key
+chown minio-user:minio-user /etc/minio
+
 
 echo "Minio à été installer et peut-être lancer avec 'service minio start' cepandant n'oubliez pas que il faut lancer toutes les machines en même temps la première fois"
