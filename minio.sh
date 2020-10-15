@@ -86,3 +86,4 @@ chown minio-user:minio-user /etc/minio
 
 
 echo "Minio à été installer et peut-être lancer avec 'service minio start' cepandant n'oubliez pas que il faut lancer toutes les machines en même temps la première fois"
+echo "Avant de lancer minio copier chaque clé publique dans /etc/minio/certs/public.crt vers les différentes machines vers /etc/minio/certs/CAs/public.crt"
