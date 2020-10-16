@@ -23,3 +23,5 @@ for publicCRT in $key; do
     done
     export IFS="|"
 done
+
+echo "Finished"
