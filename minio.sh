@@ -53,7 +53,7 @@ while [[ $Nserv -ne $While ]]; do
         
         if [[ "$ip" == *"$Host"* ]]
         then
-            MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $2;}')
+            MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $1;}')
         fi
         
         let "While=While+1"
