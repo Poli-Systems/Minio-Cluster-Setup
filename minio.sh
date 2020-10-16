@@ -43,9 +43,22 @@ echo "MINIO_SECRET_KEY=\"$SecretKey\"" >> /etc/default/minio
 echo 'MINIO_VOLUMES=""' >> /etc/default/minio
 Opts='MINIO_OPTS="'
 let "Nserv=Nserv+1"
+
+ipV4=$(ip -c -4 -o a)
+ipV6=$(ip -c -4 -o a)
 while [[ $Nserv -ne $While ]]; do
         Opts=${Opts}"https://minio-${While}:9000/var/minio "
-        Hostnames=${Hostnames}"minio-${While} "
+        
+        Host=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $1;}')
+        
+        if [[ $ipV4 -eq *"$Host"* ]]
+        then
+            MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $2;}')
+        elif
+        then [[ $ipV6 -eq *"$Host"* ]]
+            MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $2;}')
+        fi
+        
         let "While=While+1"
 done
 Opts=$Opts'-C /etc/minio"'
@@ -86,10 +99,13 @@ WantedBy=multi-user.target
 ' > /etc/systemd/system/minio.service
 systemctl daemon-reload
 
+
 service minio start
 service minio stop
 apt update
 apt install curl wget golang-go -y
+
+
 wget -O generate_cert.go "https://golang.org/src/crypto/tls/generate_cert.go?m=text"
 go run generate_cert.go -ca --host "$Hostnames"
 mv ${DIR}/cert.pem /etc/minio/certs/public.crt
