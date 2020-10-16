@@ -107,7 +107,7 @@ apt install curl wget golang-go -y
 
 
 wget -O generate_cert.go "https://golang.org/src/crypto/tls/generate_cert.go?m=text"
-go run generate_cert.go -ca --host "$Hostnames"
+go run generate_cert.go -ca --host "$MinioInstance"
 mv ${DIR}/cert.pem /etc/minio/certs/public.crt
 mv ${DIR}/key.pem /etc/minio/certs/private.key
 chown -R minio-user:minio-user /etc/minio
