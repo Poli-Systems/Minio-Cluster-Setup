@@ -51,7 +51,7 @@ while [[ $Nserv -ne $While ]]; do
         
         Host=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $1;}')
         
-        if [[ "$ip" -eq *"$Host"* ]]
+        if [[ "$ip" == *"$Host"* ]]
         then
             MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $2;}')
         fi
