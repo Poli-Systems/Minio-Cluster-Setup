@@ -45,18 +45,14 @@ echo 'MINIO_VOLUMES=""' >> /etc/default/minio
 Opts='MINIO_OPTS="'
 let "Nserv=Nserv+1"
 
-ipV4=$(ip -c -4 -o a)
-ipV6=$(ip -c -4 -o a)
+ip=$(hostname -I)
 while [[ $Nserv -ne $While ]]; do
         Opts=${Opts}"https://minio-${While}:9000/var/minio "
         
         Host=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $1;}')
         
-        if [[ $ipV4 -eq *"$Host"* ]]
+        if [[ "$ip" -eq *"$Host"* ]]
         then
-            MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $2;}')
-        elif [[ $ipV6 -eq *"$Host"* ]]
-        then 
             MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $2;}')
         fi
         
