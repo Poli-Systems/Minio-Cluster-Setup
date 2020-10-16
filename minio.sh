@@ -94,7 +94,7 @@ wget -O generate_cert.go "https://golang.org/src/crypto/tls/generate_cert.go?m=t
 go run generate_cert.go -ca --host "$Hostnames"
 mv ${DIR}/cert.pem /etc/minio/certs/public.crt
 mv ${DIR}/key.pem /etc/minio/certs/private.key
-chown minio-user:minio-user /etc/minio
+chown -R minio-user:minio-user /etc/minio
 
 
 echo "Minio was installed and can be launched with 'service minio start' but don't forget the start all the machines at the same time the first time. Also copy the certs between the machines using copy-cert.sh for example."
