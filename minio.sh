@@ -10,7 +10,7 @@ Nserv=$(echo "$IPs" | wc -w)
 
 for X in $IPs
 do
-        echo "${X} minio-{$While}" >> /etc/hosts
+        echo "${X} minio-${While}" >> /etc/hosts
         let "While=While+1"
 done
 While=1
