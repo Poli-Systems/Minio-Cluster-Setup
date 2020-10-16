@@ -54,8 +54,8 @@ while [[ $Nserv -ne $While ]]; do
         if [[ $ipV4 -eq *"$Host"* ]]
         then
             MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $2;}')
-        elif
-        then [[ $ipV6 -eq *"$Host"* ]]
+        elif [[ $ipV6 -eq *"$Host"* ]]
+        then 
             MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $2;}')
         fi
         
