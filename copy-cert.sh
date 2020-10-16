@@ -11,6 +11,7 @@ NMachines=$(echo "$MachinesIP" | wc -w)
 for X in $MachinesIP
 do
         key=${key}"| "$(ssh -p 22 -i "${SSHKey}"  -x -l root ${X} "cat /etc/minio/certs/public.crt" 2>&1)
+        ssh -p 22 -i "${SSHKey}"  -x -l root ${X} "rm -rf /etc/minio/certs/CAs/*"
 done
 
 export IFS="|"
@@ -18,7 +19,6 @@ for publicCRT in $key; do
     export IFS=" "
     for X in $MachinesIP
     do
-        ssh -p 22 -i "${SSHKey}"  -x -l root ${X} "rm -rf /etc/minio/certs/CAs/*"
         ssh -p 22 -i "${SSHKey}"  -x -l root ${X} "echo \"${publicCRT}\" >> /etc/minio/certs/CAs/minio-${While}.crt" 2>&1
         ssh -p 22 -i "${SSHKey}"  -x -l root ${X} "chown -R minio-user:minio-user /etc/minio"
         let "While=While+1"

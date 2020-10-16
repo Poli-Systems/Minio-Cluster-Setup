@@ -100,6 +100,7 @@ systemctl daemon-reload
 service minio start
 service minio stop
 
+openssl genrsa -out private.key 2048
 openssl req -new -x509 -days 3650 -key private.key -out public.crt -subj "/C=US/ST=state/L=location/O=organization/CN=<${MinioInstance}>"
 
 mv ${DIR}/public.crt /etc/minio/certs/public.crt
