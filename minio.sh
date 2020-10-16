@@ -99,14 +99,11 @@ systemctl daemon-reload
 
 service minio start
 service minio stop
-apt update
-apt install curl wget golang-go -y
 
+openssl req -new -x509 -days 3650 -key private.key -out public.crt -subj "/C=US/ST=state/L=location/O=organization/CN=<${MinioInstance}>"
 
-wget -O generate_cert.go "https://golang.org/src/crypto/tls/generate_cert.go?m=text"
-go run generate_cert.go -ca --host "$MinioInstance"
-mv ${DIR}/cert.pem /etc/minio/certs/public.crt
-mv ${DIR}/key.pem /etc/minio/certs/private.key
+mv ${DIR}/public.crt /etc/minio/certs/public.crt
+mv ${DIR}/private.key /etc/minio/certs/private.key
 chown -R minio-user:minio-user /etc/minio
 
 
