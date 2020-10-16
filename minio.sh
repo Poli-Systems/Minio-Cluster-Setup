@@ -5,8 +5,16 @@ While=1
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 
-echo "Il vous faut rajouter chaque hôte dans /etc/hosts dans le format minio-1 minio-2..."
-read -p "Combien de serveur minio aller vous connecter (minimum 4 ou minio fonctionnera pas):" Nserv
+read -p "Enter the IP's of the machines (minimum 4, separated by spaces):" IPs
+Nserv=$(echo "$IPs" | wc -w)
+
+for X in $IPs
+do
+        echo "${X} minio-{$While}" >> /etc/hosts
+        let "While=While+1"
+done
+While=1
+
 wget https://dl.min.io/server/minio/release/linux-amd64/minio
 chmod +x minio
 mv minio /usr/local/bin
@@ -16,17 +24,20 @@ mv mc /usr/local/bin
 
 useradd -r minio-user -s /sbin/nologin
 chown -R minio-user:minio-user /usr/local/bin/minio
-read -p "Ou voulez vous stocker les données de minio :" Folder
+read -p "Where do you want to store your minio data :" Folder
 mkdir $Folder
 chown -R minio-user:minio-user $Folder
 chmod u+rxw $Folder
 mkdir /etc/minio
 chown -R minio-user:minio-user /etc/minio
 chmod u+rxw /etc/minio
+echo "Random keys"
+head /dev/urandom | tr -dc A-Za-z0-9 | head -c 24 ; echo ''
+head /dev/urandom | tr -dc A-Za-z0-9 | head -c 24 ; echo ''
 
-
-read -p "Quel access key shouaitez vous utiliser :" AccessKey
-read -p "Quel secret key shouaitez vous utiliser :" SecretKey
+echo ""
+read -p "Which Access key do you want to use :" AccessKey
+read -p "Which Secret key do you want to use :" SecretKey
 echo "MINIO_ACCESS_KEY=\"$AccessKey\"" > /etc/default/minio
 echo "MINIO_SECRET_KEY=\"$SecretKey\"" >> /etc/default/minio
 echo 'MINIO_VOLUMES=""' >> /etc/default/minio
@@ -81,12 +92,9 @@ apt update
 apt install curl wget golang-go -y
 wget -O generate_cert.go "https://golang.org/src/crypto/tls/generate_cert.go?m=text"
 go run generate_cert.go -ca --host "$Hostnames"
-sleep 2s
 mv ${DIR}/cert.pem /etc/minio/certs/public.crt
 mv ${DIR}/key.pem /etc/minio/certs/private.key
 chown minio-user:minio-user /etc/minio
 
 
-echo "Minio à été installer et peut-être lancer avec 'service minio start' cepandant n'oubliez pas que il faut lancer toutes les machines en même temps la première fois"
-echo "Avant de lancer minio copier chaque clé publique dans /etc/minio/certs/public.crt vers les différentes machines vers /etc/minio/certs/CAs/public.crt et faites un"
-echo "chown -R minio-user:minio-user /etc/minio"
+echo "Minio was installed and can be launched with 'service minio start' but don't forget the start all the machines at the same time the first time. Also copy the certs between the machines using copy-cert.sh for example."
