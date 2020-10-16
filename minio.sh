@@ -34,6 +34,7 @@ Opts='MINIO_OPTS="'
 let "Nserv=Nserv+1"
 while [[ $Nserv -ne $While ]]; do
         Opts=${Opts}"https://minio-${While}:9000/var/minio "
+        Hostnames=${Hostnames}"minio-${While} "
         let "While=While+1"
 done
 Opts=$Opts'-C /etc/minio"'
@@ -79,8 +80,7 @@ service minio stop
 apt update
 apt install curl wget golang-go -y
 wget -O generate_cert.go "https://golang.org/src/crypto/tls/generate_cert.go?m=text"
-IP=`curl ifconfig.me`
-go run generate_cert.go -ca --host "$IP"
+go run generate_cert.go -ca --host "$Hostnames"
 sleep 2s
 mv ${DIR}/cert.pem /etc/minio/certs/public.crt
 mv ${DIR}/key.pem /etc/minio/certs/private.key
