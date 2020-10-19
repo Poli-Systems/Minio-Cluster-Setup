@@ -10,7 +10,7 @@ read -p "Enter the public hostname's of the machines (minimum 4, separated by sp
 Nserv=$(echo "$Hostname" | wc -w)
 
 
-MyIP=$(curl ifconfig.me)
+MyIP=$(curl -s ifconfig.me)
 for X in $Hostname
 do
         CurrentIP=$(getent ahostsv4 $X | awk '{print $1}' | head -1)
