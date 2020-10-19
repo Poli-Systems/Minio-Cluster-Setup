@@ -13,7 +13,8 @@ Nserv=$(echo "$Hostname" | wc -w)
 MyIP=$(curl -s ifconfig.me)
 for X in $Hostname
 do
-        CurrentIP=$(ping -c1 $X| sed -nE 's/^PING[^(]+\(([^)]+)\).*/\1/p')
+        echo $X
+        CurrentIP=$(ping -c1 ${X} | sed -nE 's/^PING[^(]+\(([^)]+)\).*/\1/p')
         if [[ $CurrentIP == $MyIP ]]
         then
                 apt update 
