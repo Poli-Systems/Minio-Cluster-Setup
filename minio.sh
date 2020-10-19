@@ -37,7 +37,7 @@ do
                 service lsws start
                 service apache2 start
                 service nginx start
-        done
+        fi
 
         Opts=${Opts}"https://${X}:9000/var/minio "
 
