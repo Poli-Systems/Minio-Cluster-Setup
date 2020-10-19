@@ -3,17 +3,48 @@
 #By Poli Systems
 While=1
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+Opts='MINIO_OPTS="'
 
 
-read -p "Enter the IP's of the machines (minimum 4, separated by spaces):" IPs
-Nserv=$(echo "$IPs" | wc -w)
+read -p "Enter the public hostname's of the machines (minimum 4, separated by spaces):" Hostname
+Nserv=$(echo "$Hostname" | wc -w)
 
-for X in $IPs
+
+MyIP=$(curl ifconfig.me)
+for X in $Hostname
 do
-        sed -i "/minio-${While}/d" /etc/hosts
-        echo "${X} minio-${While}" >> /etc/hosts
+        CurrentIP=$(getent ahostsv4 $X | awk '{print $1}' | head -1)
+        if [[ $CurrentIP == $MyIP ]]
+        then
+                apt update 
+                apt install certbot
+
+                service lsws stop
+                service apache2 stop
+                service nginx stop
+
+                mkdir -p /etc/minio/certs
+
+                Domain=$(echo "$Hostname" | awk -F\. '{print $(NF-1) FS $NF}')
+                certbot certonly --standalone -n -d $Hostname --staple-ocsp -m admin@${Domain} --agree-tos
+
+                cp /etc/letsencrypt/live/${Hostname}/fullchain.pem /etc/minio/certs/public.crt
+                cp /etc/letsencrypt/live/${Hostname}/privkey.pem /etc/minio/certs/private.key
+
+                chown -R minio-user:minio-user /etc/minio
+                chmod u+rxw /etc/minio
+
+                service lsws start
+                service apache2 start
+                service nginx start
+        done
+
+        Opts=${Opts}"https://${X}:9000/var/minio "
+
         let "While=While+1"
 done
+Opts=$Opts'-C /etc/minio"'
+
 While=1
 
 wget https://dl.min.io/server/minio/release/linux-amd64/minio
@@ -29,9 +60,6 @@ read -p "Where do you want to store your minio data :" Folder
 mkdir $Folder
 chown -R minio-user:minio-user $Folder
 chmod u+rxw $Folder
-mkdir /etc/minio
-chown -R minio-user:minio-user /etc/minio
-chmod u+rxw /etc/minio
 echo "Random keys"
 head /dev/urandom | tr -dc A-Za-z0-9 | head -c 24 ; echo ''
 head /dev/urandom | tr -dc A-Za-z0-9 | head -c 24 ; echo ''
@@ -42,23 +70,6 @@ read -p "Which Secret key do you want to use :" SecretKey
 echo "MINIO_ACCESS_KEY=\"$AccessKey\"" > /etc/default/minio
 echo "MINIO_SECRET_KEY=\"$SecretKey\"" >> /etc/default/minio
 echo 'MINIO_VOLUMES=""' >> /etc/default/minio
-Opts='MINIO_OPTS="'
-let "Nserv=Nserv+1"
-
-ip=$(hostname -I)
-while [[ $Nserv -ne $While ]]; do
-        Opts=${Opts}"https://minio-${While}:9000/var/minio "
-        
-        Host=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $1;}')
-        
-        if [[ "$ip" == *"$Host"* ]]
-        then
-            MinioInstance=$(getent hosts | grep minio-${While} | head -n1 | awk '{print $2;}')
-        fi
-        
-        let "While=While+1"
-done
-Opts=$Opts'-C /etc/minio"'
 echo $Opts >> /etc/default/minio
 
 
@@ -100,12 +111,6 @@ systemctl daemon-reload
 service minio start
 service minio stop
 
-openssl genrsa -out private.key 2048
-openssl req -new -x509 -days 3650 -key private.key -out public.crt -subj "/C=US/ST=state/L=location/O=organization/CN=${MinioInstance}"
-
-mv ${DIR}/public.crt /etc/minio/certs/public.crt
-mv ${DIR}/private.key /etc/minio/certs/private.key
 chown -R minio-user:minio-user /etc/minio
-
 
 echo "Minio was installed and can be launched with 'service minio start' but don't forget the start all the machines at the same time the first time. Also copy the certs between the machines using copy-cert.sh for example."
