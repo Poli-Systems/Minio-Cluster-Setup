@@ -18,7 +18,7 @@ do
         if [[ $CurrentIP == $MyIP ]]
         then
                 apt update 
-                apt install certbot
+                apt install certbot -y
 
                 service lsws stop
                 service apache2 stop
@@ -114,4 +114,4 @@ service minio stop
 
 chown -R minio-user:minio-user /etc/minio
 
-echo "Minio was installed and can be launched with 'service minio start' but don't forget the start all the machines at the same time the first time. Also copy the certs between the machines using copy-cert.sh for example."
+echo "Minio was installed and can be launched with 'service minio start' but don't forget the start all the machines at the same time the first time."
