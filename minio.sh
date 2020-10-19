@@ -26,11 +26,11 @@ do
 
                 mkdir -p /etc/minio/certs
 
-                Domain=$(echo "$Hostname" | awk -F\. '{print $(NF-1) FS $NF}')
-                certbot certonly --standalone -n -d $Hostname --staple-ocsp -m admin@${Domain} --agree-tos
+                Domain=$(echo "$X" | awk -F\. '{print $(NF-1) FS $NF}')
+                certbot certonly --standalone -n -d $X --staple-ocsp -m admin@${Domain} --agree-tos
 
-                cp /etc/letsencrypt/live/${Hostname}/fullchain.pem /etc/minio/certs/public.crt
-                cp /etc/letsencrypt/live/${Hostname}/privkey.pem /etc/minio/certs/private.key
+                cp /etc/letsencrypt/live/${X}/fullchain.pem /etc/minio/certs/public.crt
+                cp /etc/letsencrypt/live/${X}/privkey.pem /etc/minio/certs/private.key
 
                 chown -R minio-user:minio-user /etc/minio
                 chmod u+rxw /etc/minio
